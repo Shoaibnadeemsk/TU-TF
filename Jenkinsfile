@@ -29,7 +29,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout your code from the repository
-                git branch: 'main', changelog: false, credentialsId: 'Git_credentials', poll: false, url: 'https://github.com/Shoaibnadeemsk/TU-TF.git'
+                git branch: 'main', changelog: false, poll: false, url: 'https://github.com/Shoaibnadeemsk/TU-TF.git'
             }
         }
 
