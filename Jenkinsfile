@@ -4,7 +4,7 @@ pipeline {
 
     tools {
 
-      terraform 'terraform'
+      "Terraform-v1.5.3"
 
     }
 
