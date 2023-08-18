@@ -1,48 +1,44 @@
 pipeline {
     agent any
-
+    parameters {
+        string(name: 'REGION', defaultValue: 'us-east-1', description: 'Select the region')
+    }
     environment {
-        AWS_DEFAULT_REGION = 'us-east-1'
+        AWS_DEFAULT_REGION = "${params.REGION}" // Set your desired AWS region
+    }
+    options {
+        skipStagesAfterUnstable()
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', changelog: false, credentialsId: 'Git_credentials', poll: false, url: 'https://github.com/Shoaibnadeemsk/TU-TF.git'
+            }
+        }
+
         stage('Terraform Init') {
             steps {
-                script {
-                    // Checkout the code from your repository
-                    checkout scm
-
-                    // Run Terraform Init
-                    sh 'terraform init'
-                }
+                sh 'terraform init -reconfigure'
             }
         }
 
         stage('Terraform Plan') {
             steps {
-                script {
-                    // Run Terraform Plan
-                    sh 'terraform plan'
-                }
+                sh 'terraform plan'
             }
         }
 
         stage('Terraform Apply') {
             steps {
-                script {
-                    // Run Terraform Apply
-                    sh 'terraform apply -auto-approve'
-                }
+                sh 'terraform apply -auto-approve'
             }
         }
 
-        stage('Terraform Destroy') {
-            steps {
-                script {
-                    // Run Terraform Destroy
-                    sh 'terraform destroy -auto-approve'
-                }
-            }
-        }
+        // stage('Terraform destroy') {
+        //     steps {
+        //         sh 'terraform destroy -auto-approve'
+        //     }
+        // }
     }
 }
