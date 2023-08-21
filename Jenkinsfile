@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-      terraform 'Terraform-v1.5.3'
-    }
-
     parameters {
         string(name: 'REGION', defaultValue: 'us-east-1', description: 'Select the region')
     }
