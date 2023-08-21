@@ -19,7 +19,7 @@ pipeline {
 
         stage('aws setup Check') {
             steps {
-                sh 'aws sts get-caller-identity' -no-color
+                sh 'aws sts get-caller-identity' 
             }
         }
 
