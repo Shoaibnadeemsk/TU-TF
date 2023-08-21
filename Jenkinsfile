@@ -19,19 +19,19 @@ pipeline {
 
         stage('aws setup Check') {
             steps {
-                sh 'aws sts get-caller-identity'
+                sh 'aws sts get-caller-identity' -no-color
             }
         }
 
         stage('Terraform Init') {
             steps {
-                sh 'terraform init'
+                sh 'terraform init' -no-color
             }
         }
 
         stage('Terraform Plan') {
             steps {
-                sh 'terraform plan'
+                sh 'terraform plan' -no-color
             }
         }
     }
