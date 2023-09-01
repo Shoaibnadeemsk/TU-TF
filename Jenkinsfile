@@ -25,8 +25,33 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                sh 'terraform init'
+                sh 'terraform init -no-color'
+            }
+        }
+
+        stage('Terraform Plan') {
+            when {
+                expression {
+                    // Only run Terraform plan stage for pull requests
+                    return env.CHANGE_ID != null && env.CHANGE_BRANCH != null && env.CHANGE_TARGET != null
+                }
+            }
+            steps {
+                sh 'terraform plan -no-color'
+            }
+        }
+
+        stage('Terraform Apply') {
+            when {
+                expression {
+                    // Only run Terraform apply stage for merge events
+                    return env.CHANGE_ID != null && env.CHANGE_BRANCH == 'main' && env.CHANGE_TARGET == 'main'
+                }
+            }
+            steps {
+                sh 'terraform apply -auto-approve -no-color'
             }
         }
     }
- }
+}
+
