@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'REGION', defaultValue: 'us-east-1', description: 'Select the region')
+    }
+
+    environment {
+        AWS_DEFAULT_REGION = "${params.REGION}"
+        AWS_CONFIGURE = credentials('AWS_Cred')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+               checkout()
+            }
+        }
+
+        stage('aws setup Check') {
+            steps {
+                sts()
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                terraforminit()
+            }
+        }
+
+        stage('Terraform Plan') {
+            when {
+                expression {
+                    // Only run Terraform plan stage for pull requests
+                    return env.CHANGE_ID != null && env.CHANGE_BRANCH != null && env.CHANGE_TARGET != null
+                }
+            }
+            steps {
+                plan()
+            }
+        }
+
+        stage('Terraform Apply') {
+            when {
+                expression {
+                    // Only run Terraform apply stage for merge events
+                    return env.CHANGE_ID != null && env.CHANGE_BRANCH == 'main' && env.CHANGE_TARGET == 'main'
+                }
+            }
+            steps {
+                apply()
+            }
+        }
+    }
+}
+
